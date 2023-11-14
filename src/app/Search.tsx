@@ -35,8 +35,8 @@ const Search = (props: Props) => {
   )
 
   return (
-    <div>
-      <details open={showApiKey} className='flow-content'>
+    <div className='search-container'>
+      <details open={showApiKey} className='api-key flow-content'>
         <summary className={!keySet ? 'required' : ''}>API Key</summary>
         <p>This uses the <a href="https://www.movieofthenight.com/about/api" target="_blank">Movie of the Night API</a> to look up movie availability. A free API key is required to request this info. <a className="button" href="https://rapidapi.com/movie-of-the-night-movie-of-the-night-default/api/streaming-availability/pricing" target="_blank">Request a Free Key here</a> and then paste it into the field bellow. <em>Your API key will only be used/stored locally, nothing is sent to this server.</em></p>
         <label>
