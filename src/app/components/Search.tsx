@@ -1,7 +1,8 @@
 'use client';
 
 import React, { type ChangeEvent, useState, useEffect, useCallback, useRef } from 'react'
-import useSearch from './hooks/useSearch';
+import useSearch from '../hooks/useSearch';
+import FreeCountryResults from './FreeCountryResults';
 
 type Props = {}
 
@@ -24,6 +25,11 @@ const Search = (props: Props) => {
       // Open the API Key detail if we don't have a key stored currently
       setShowApiKey(true);
     }
+
+
+    // TODO temp remove
+    searchRef.current.value = 'tt2309961';
+
   }, []);
 
   // Set ApiKey and also store in LocalStorage
@@ -50,10 +56,11 @@ const Search = (props: Props) => {
         <label>
           IMDb Movie ID
           <a className="info" href="https://developer.imdb.com/documentation/key-concepts" target="_blank">?</a>
-          <input type='text' value="tt2309961" ref={searchRef}></input>
+          <input type='text' ref={searchRef}></input>
         </label>
         <button className='button' disabled={!keySet} onClick={() => handleSearch(apiKey, searchRef.current?.value ?? "")}>Search</button>
       </div>
+      <FreeCountryResults results={results} />
     </div>
   )
 }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { GetIdResponse, ParseResult } from '../types/MovieNightApi/GetId';
+import { GetIdResponse, type CountryResult } from '../types/MovieNightApi/GetId';
 
 const useSearch = () => {
-    const [results, setResults] = useState('');
+    const [results, setResults] = useState([] as CountryResult[]);
 
 
     const handleSearch = async (apiKey: string, id: string, ignoreCached: boolean = false) => {
@@ -38,9 +38,7 @@ const useSearch = () => {
             const json = JSON.parse(result) as GetIdResponse;
             const found = parseApiResponse(json);
 
-            const results = JSON.stringify(found);
-            setResults(results);
-            console.log(results);
+            setResults(found);
         }
     }
 
@@ -53,7 +51,7 @@ const useSearch = () => {
             const found = val.filter(obj => obj.streamingType === "subscription" || obj.streamingType === "free");
             // Add country code to results and store
             for (const obj of found) {
-                countries.push({ country, ...obj } as ParseResult);
+                countries.push({ country, ...obj } as CountryResult);
             }
         }
 

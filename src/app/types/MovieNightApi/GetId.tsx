@@ -34,7 +34,7 @@ export interface StreamOption {
     availableSince: number;
 }
 
-export interface ParseResult extends StreamOption {
+export interface CountryResult extends StreamOption {
     country: string;
 }
 
