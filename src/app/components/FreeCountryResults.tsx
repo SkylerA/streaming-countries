@@ -10,7 +10,8 @@ const FreeCountryResults = (props: Props) => {
     const { results } = props;
 
     return (
-        <div>
+        <div className='stream-results card'>
+            <h2>Free-ish Streams</h2>
             {results.map((data, idx) => <FreeListing data={data} key={idx} />)}
         </div>
     )

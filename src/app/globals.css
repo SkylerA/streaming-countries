@@ -39,8 +39,12 @@ svg {
 
 :root {
   --clr-fg: black;
-  --clr-btn-grad1: #30bfff;
-  --clr-btn-grad2: #6d1cff;
+  --clr-pink: #ff1cc6;
+  --clr-blue: #30bfff;
+  --clr-purple: #6d1cff;
+
+  --clr-btn-grad1: var(--clr-blue);
+  --clr-btn-grad2: var(--clr-purple);
 
   --label-gap: .25rem;
 
@@ -77,16 +81,17 @@ body {
 }
 
 .button {
-  background-image: linear-gradient(75deg, var(--clr-btn-grad1), var(--clr-btn-grad2));
+  background-image: linear-gradient(45deg, var(--clr-btn-grad1), var(--clr-btn-grad2));
   color: white;
   text-decoration: none;
   font-weight: 600;
   border-radius: 1rem;
   padding: .0625rem .5rem;
+  border: 1px solid #AAA;
 }
 
 .button:hover {
-  --clr-btn-grad2: #ff1cc6;
+  --clr-btn-grad2: var(--clr-pink);
 }
 
 .button:disabled {
@@ -102,6 +107,12 @@ button.button {
   cursor: pointer;
 }
 
+.search-container {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
 .search-container label {
   display: inline-flex;
   gap: var(--label-gap);
@@ -112,6 +123,11 @@ button.button {
   margin-left: var(--label-gap);
 }
 
+details summary {
+  cursor: pointer;
+}
+
+.card,
 details.api-key[open] {
   background-image: linear-gradient(0deg, #777, #444);
   padding: 1rem;
@@ -125,5 +141,38 @@ details.api-key[open] a {
 
 details.api-key[open] label,
 details.api-key[open] summary {
+  font-weight: 600;
+}
+
+.listing .service,
+.listing .stream-type {
+  text-transform: capitalize;
+}
+
+.listing .country {
+  font-weight: 600;
+}
+
+[data-quality] {
+  text-transform: uppercase;
+  background-color: #a9e4ff;
+  border-radius: .5rem;
+  padding: 0rem .25rem;
+  color: black;
+}
+
+[data-quality="sd"] {
+  background-color: #e6a2a2;
+}
+
+.info {
+  text-decoration: none;
+  color: white;
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  aspect-ratio: 1 / 1;
+  background-image: linear-gradient(135deg, orange, var(--clr-pink));
+  border-radius: 1rem;
   font-weight: 600;
 }
