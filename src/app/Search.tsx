@@ -1,6 +1,7 @@
 'use client';
 
 import React, { type ChangeEvent, useState, useEffect, useCallback, useRef } from 'react'
+import useSearch from './hooks/useSearch';
 
 type Props = {}
 
@@ -8,6 +9,7 @@ const Search = (props: Props) => {
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const { handleSearch, results } = useSearch();
 
   const keySet = apiKey !== '';
 
@@ -44,12 +46,14 @@ const Search = (props: Props) => {
           <input value={apiKey} onChange={setAndStoreApiKey}></input>
         </label>
       </details>
-      <label>
-        IMDb Movie ID
-        <a className="info" href="https://developer.imdb.com/documentation/key-concepts" target="_blank">?</a>
-        <input type='text' ref={searchRef}></input>
-      </label>
-      <button className='button' disabled={!keySet}>Search</button>
+      <div>
+        <label>
+          IMDb Movie ID
+          <a className="info" href="https://developer.imdb.com/documentation/key-concepts" target="_blank">?</a>
+          <input type='text' value="tt2309961" ref={searchRef}></input>
+        </label>
+        <button className='button' disabled={!keySet} onClick={() => handleSearch(apiKey, searchRef.current?.value ?? "")}>Search</button>
+      </div>
     </div>
   )
 }
