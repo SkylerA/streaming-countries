@@ -35,17 +35,6 @@ svg {
   margin-top: 1rem;
 }
 
-/* or */
-
-.flow-content>* {
-  margin-bottom: 1rem;
-}
-
-.flow-content>*:last-child {
-  margin-bottom: 0;
-}
-
-
 /* END RESET */
 
 :root {
