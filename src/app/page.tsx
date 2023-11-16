@@ -1,10 +1,12 @@
 // import styles from './page.module.css'
+import About from './components/About'
 import Search from './components/Search'
 
 export default function Home() {
   return (
     <main>
-      <Search></Search>
+      <About />
+      <Search />
     </main>
   )
 }

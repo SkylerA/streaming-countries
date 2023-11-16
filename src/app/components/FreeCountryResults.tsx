@@ -3,7 +3,7 @@ import { type CountryResult } from '../types/MovieNightApi/GetId'
 import FreeListing from './FreeListing'
 
 type Props = {
-    results: CountryResult[]
+    results: CountryResult[] | undefined;
 }
 
 const FreeCountryResults = (props: Props) => {
