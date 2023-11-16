@@ -37,6 +37,12 @@ const Search = (props: Props) => {
     [],
   )
 
+  function checkForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
+    if (event.key === 'Enter') {
+      handleSearch(apiKey, searchRef.current?.value ?? "");
+    }
+  }
+
   return (
     <div className='search-container'>
       <details open={showApiKey} className='api-key flow-content'>
@@ -51,7 +57,7 @@ const Search = (props: Props) => {
         <label>
           IMDb Movie ID
           <a className="info" href="https://developer.imdb.com/documentation/key-concepts" target="_blank">?</a>
-          <input type='text' ref={searchRef}></input>
+          <input type='text' onKeyDown={checkForEnter} ref={searchRef}></input>
         </label>
         <button className='button' disabled={!keySet} onClick={() => handleSearch(apiKey, searchRef.current?.value ?? "")}>Search</button>
       </div>
