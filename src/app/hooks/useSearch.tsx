@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { GetIdResponse, type CountryResult } from '../types/MovieNightApi/GetId';
 
 const useSearch = () => {
-    const [results, setResults] = useState(undefined);
+    const [results, setResults] = useState<CountryResult[] | undefined>(undefined);
 
 
     const handleSearch = async (apiKey: string, id: string, ignoreCached: boolean = false) => {
