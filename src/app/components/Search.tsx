@@ -25,11 +25,6 @@ const Search = (props: Props) => {
       // Open the API Key detail if we don't have a key stored currently
       setShowApiKey(true);
     }
-
-
-    // TODO temp remove
-    searchRef.current.value = 'tt2309961';
-
   }, []);
 
   // Set ApiKey and also store in LocalStorage
