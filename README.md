@@ -1,3 +1,16 @@
+# About
+
+This is a tool for all those ads that say you can easily stream movies from other countries with a VPN, but ignore the fact that it's a pain to figure out which country to choose.
+
+[JustWatch](https://JustWatch.com) is great for finding where you can stream a video, but it only lets you check one country at a time.
+
+This tool uses the [Movie of the Night](https://movieofthenight.com/") API to search the stream options of all countries at once and then filters for only the free-ish streaming options.
+
+<br />
+<br />
+
+## Next.js README below
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
