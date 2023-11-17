@@ -1,10 +1,17 @@
-# About
+# Live Site
+
+[Live Site Here](https://streaming-countries.vercel.app/)
+
+## About
 
 This is a tool for all those ads that say you can easily stream movies from other countries with a VPN, but ignore the fact that it's a pain to figure out which country to choose.
 
 [JustWatch](https://JustWatch.com) is great for finding where you can stream a video, but it only lets you check one country at a time.
 
 This tool uses the [Movie of the Night](https://movieofthenight.com/") API to search the stream options of all countries at once and then filters for only the free-ish streaming options.
+
+Provide a free API Key and IMDb id for the movie you want and it will display which countries might have the movie.
+![Preview Image](./src/app/imgs/preview.png)
 
 <br />
 <br />
