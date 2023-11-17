@@ -7,6 +7,7 @@ export default function Home() {
     <main>
       <About />
       <Search />
+      <a href='https://github.com/SkylerA/streaming-countries' target="_blank" className='github'></a>
     </main>
   )
 }

@@ -201,3 +201,14 @@ details[open] summary {
   font-weight: 600;
   color: red;
 }
+
+.github {
+  display: block;
+  width: 1.75rem;
+  aspect-ratio: 1/1;
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  background-image: url(./imgs/github-mark.svg);
+  background-size: contain;
+}
