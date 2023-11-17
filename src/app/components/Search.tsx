@@ -10,7 +10,7 @@ const Search = (props: Props) => {
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
-  const { handleSearch, results } = useSearch();
+  const { handleSearch, results, error } = useSearch();
 
   const keySet = apiKey !== '';
 
@@ -61,7 +61,20 @@ const Search = (props: Props) => {
         </label>
         <button className='button' disabled={!keySet} onClick={() => handleSearch(apiKey, searchRef.current?.value ?? "")}>Search</button>
       </div>
-      <FreeCountryResults results={results} />
+      {!error &&
+        <FreeCountryResults results={results} />
+      }
+      {error &&
+        <div>
+          <p>
+            Something went wrong while requesting data.
+          </p>
+          <p>
+            Are your API Key({apiKey}) and IMDb ID({searchRef.current?.value}) valid?
+          </p>
+          <p className='error'>Error: {error}</p>
+        </div>
+      }
     </div>
   )
 }

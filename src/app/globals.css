@@ -196,3 +196,8 @@ details[open] summary {
   border-radius: 1rem;
   font-weight: 600;
 }
+
+.error {
+  font-weight: 600;
+  color: red;
+}

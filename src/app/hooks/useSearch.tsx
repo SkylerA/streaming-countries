@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { GetIdResponse, type CountryResult } from '../types/MovieNightApi/GetId';
+import { withCoalescedInvoke } from 'next/dist/lib/coalesced-function';
 
 const useSearch = () => {
     const [results, setResults] = useState<CountryResult[] | undefined>(undefined);
-
+    const [error, setError] = useState("");
 
     const handleSearch = async (apiKey: string, id: string, ignoreCached: boolean = false) => {
         const storageKey = `result-${id}`;
@@ -25,11 +26,21 @@ const useSearch = () => {
 
             try {
                 const response = await fetch(url, options);
-                result = await response.text();
-                // Cache result
-                localStorage.setItem(storageKey, result);
+                if (response.ok) {
+                    result = await response.text();
+                    // Cache result
+                    localStorage.setItem(storageKey, result);
+                } else {
+                    const json = await response.json();
+                    throw json.message;
+                }
             } catch (error) {
-                console.error(error);
+                if (typeof error === "string") {
+                    setError(error);
+                } else {
+                    console.log(error);
+                    setError("Unhandled Error: check console log");
+                }
             }
         }
 
@@ -38,27 +49,29 @@ const useSearch = () => {
             const json = JSON.parse(result) as GetIdResponse;
             const found = parseApiResponse(json);
 
+            setError("");
             setResults(found);
         }
     }
 
     const parseApiResponse = (data: GetIdResponse) => {
-        const info = data.result.streamingInfo;
+        const info = data.result?.streamingInfo;
         const countries = [];
         // Step through each country
-        for (const [country, val] of Object.entries(info)) {
-            // Filter out countries that don't have a video for free or subscription
-            const found = val.filter(obj => obj.streamingType === "subscription" || obj.streamingType === "free");
-            // Add country code to results and store
-            for (const obj of found) {
-                countries.push({ country, ...obj } as CountryResult);
+        if (info) {
+            for (const [country, val] of Object.entries(info)) {
+                // Filter out countries that don't have a video for free or subscription
+                const found = val.filter(obj => obj.streamingType === "subscription" || obj.streamingType === "free");
+                // Add country code to results and store
+                for (const obj of found) {
+                    countries.push({ country, ...obj } as CountryResult);
+                }
             }
         }
-
         return countries;
     }
 
-    return { handleSearch, results };
+    return { handleSearch, results, error };
 }
 
 export default useSearch
