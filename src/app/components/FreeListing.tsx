@@ -18,7 +18,7 @@ const FreeListing = (props: Props) => {
         <div className='listing'>
             <span className='country'>{Countries[data.country]}</span>&nbsp;
             <span className='service'>{service}</span>&nbsp;
-            <span data-quality={data.quality}>{data.quality}</span>&nbsp;
+            <span data-quality={data.quality}>{data.quality}</span>{data.quality && " "}
             <span className='stream-type'>{data.streamingType}</span>
         </div>
     )
