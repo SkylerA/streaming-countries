@@ -47,19 +47,31 @@ const Search = (props: Props) => {
     <div className='search-container'>
       <details open={showApiKey} className='api-key flow-content'>
         <summary className={!keySet ? 'required' : ''}>API Key</summary>
-        <p>This uses the <a href="https://www.movieofthenight.com/about/api" target="_blank">Movie of the Night API</a> to look up movie availability. A free API key is required to request this info. <a className="button" href="https://rapidapi.com/movie-of-the-night-movie-of-the-night-default/api/streaming-availability/pricing" target="_blank">Request a Free Key here</a> and then paste it into the field bellow. <em>Your API key will only be used/stored locally, nothing is sent to this server.</em></p>
+        <p>
+          This uses the <a href="https://www.movieofthenight.com/about/api" target="_blank">Movie of the Night API</a> to look up movie availability. A free API key is required to request this info.
+        </p>
+        <p>
+          <a className="button" href="https://rapidapi.com/movie-of-the-night-movie-of-the-night-default/api/streaming-availability/pricing" target="_blank">Request a Free Key here</a> and then paste it into the field bellow.
+        </p>
+        <p>
+          <em>Your API key will only be stored locally to make the API request, nothing is sent to this server.</em>
+        </p>
         <label>
-          API Key
+          <span className='label'>
+            API Key
+          </span>
           <input value={apiKey} onChange={setAndStoreApiKey}></input>
         </label>
       </details>
       <div>
         <label>
-          IMDb Movie ID
+          <span className='label'>
+            IMDb Movie ID
+          </span>
           <a className="info" href="https://developer.imdb.com/documentation/key-concepts" target="_blank">?</a>
-          <input type='text' onKeyDown={checkForEnter} ref={searchRef}></input>
+          <input className="search-field" type='text' onKeyDown={checkForEnter} ref={searchRef}></input>
+          <button className='button' disabled={!keySet} onClick={() => handleSearch(apiKey, searchRef.current?.value ?? "")}>Search</button>
         </label>
-        <button className='button' disabled={!keySet} onClick={() => handleSearch(apiKey, searchRef.current?.value ?? "")}>Search</button>
       </div>
       {!error &&
         <FreeCountryResults results={results} />
