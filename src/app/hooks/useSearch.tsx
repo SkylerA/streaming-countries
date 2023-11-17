@@ -6,10 +6,11 @@ const useSearch = () => {
     const [results, setResults] = useState<CountryResult[] | undefined>(undefined);
     const [error, setError] = useState("");
 
-    const handleSearch = async (apiKey: string, id: string, ignoreCached: boolean = false) => {
+    const handleSearch = async (apiKey: string, id: string, ignoreCached: boolean = true) => {
         const storageKey = `result-${id}`;
         // To avoid API calls while testing we cache previous calls in localStorage
-        let result = localStorage.getItem(storageKey);
+        // let result = localStorage.getItem(storageKey);
+        let result = ''; // disabling caching in release for now
 
         // Get API results if not cached or explicitly re-querying
         if (!result || ignoreCached) {
@@ -29,7 +30,8 @@ const useSearch = () => {
                 if (response.ok) {
                     result = await response.text();
                     // Cache result
-                    localStorage.setItem(storageKey, result);
+                    // localStorage.setItem(storageKey, result);
+                    // disabling caching in release for now
                 } else {
                     const json = await response.json();
                     throw json.message;
