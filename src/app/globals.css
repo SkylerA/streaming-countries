@@ -82,9 +82,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: .5rem;
-  margin-top: 2rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
+  margin: 2rem 1rem 1rem 1rem;
   max-width: 600px;
   min-height: 100vh;
 }
