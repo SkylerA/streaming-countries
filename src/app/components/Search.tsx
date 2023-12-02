@@ -28,15 +28,18 @@ const Search = (props: Props) => {
 
   // Handle API Key rendering
   useEffect(() => {
-    // Check for a stored api key
-    const localMovieNightKey = localStorage.getItem(MovieNightStorageKey) || '';
-    if (localMovieNightKey !== '') {
+    // Check for a stored api keys
+    let localKey = localStorage.getItem(MovieNightStorageKey) || '';
+    if (localKey !== '') {
       // If we have a key already, update the field
-      setMovieNightApiKey(localMovieNightKey);
+      setMovieNightApiKey(localKey);
     } else {
       // Open the API Key detail if we don't have a key stored currently
       setShowApiKey(true);
     }
+    // IMDb ID api key is optional so don't need to setShowApiKey if it's missing
+    localKey = localStorage.getItem(IMDbStorageKey) || '';
+    setImdbApiKey(localKey);
   }, []);
 
 
