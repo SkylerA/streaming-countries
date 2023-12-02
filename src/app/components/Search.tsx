@@ -3,8 +3,19 @@
 import React, { type ChangeEvent, useState, useEffect, useCallback, useRef } from 'react'
 import useCountrySearch from '../hooks/useSearch';
 import FreeCountryResults from './FreeCountryResults';
+import ApiKeyPrompt from './ApiKeyPrompt';
 
 type Props = {}
+
+// Movie of the Night API Prompt vars
+const MovieNightStorageKey = "_MovieNightApiKey";
+const MovieNightUrl = "https://rapidapi.com/movie-of-the-night-movie-of-the-night-default/api/streaming-availability/pricing";
+const MovieNightDesc = <>This uses the <a href="https://www.movieofthenight.com/about/api" target="_blank">Movie of the Night API</a> to look up movie availability. A free API key is required to request this info.</>;
+
+// IMDb ID Search API Prompt vars
+const IMDbDesc = <>If you want to enable IMDb ID lookups (so you can search by movie name instead of copy/pasting from urls) you can grab another free key for an API that allows ID lookups</>;
+const IMDbStorageKey = "_IMDbApiKey";
+const IMDbUrl = "https://rapidapi.com/linaspurinis/api/mdblist/pricing";
 
 const Search = (props: Props) => {
   const [movieNightApiKey, setMovieNightApiKey] = useState('');
@@ -18,35 +29,16 @@ const Search = (props: Props) => {
   // Handle API Key rendering
   useEffect(() => {
     // Check for a stored api key
-    const localKey = localStorage.getItem("_MovieNightApiKey") || '';
-    if (localKey !== '') {
+    const localMovieNightKey = localStorage.getItem(MovieNightStorageKey) || '';
+    if (localMovieNightKey !== '') {
       // If we have a key already, update the field
-      setMovieNightApiKey(localKey);
+      setMovieNightApiKey(localMovieNightKey);
     } else {
       // Open the API Key detail if we don't have a key stored currently
       setShowApiKey(true);
     }
   }, []);
 
-  // Set ApiKey and also store in LocalStorage
-  const setAndStoreApiKey = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const val = event.target.value;
-      localStorage.setItem('_MovieNightApiKey', val);
-      setMovieNightApiKey(val);
-    },
-    [],
-  )
-
-  // Set ApiKey and also store in LocalStorage
-  const setAndStoreImdbApiKey = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const val = event.target.value;
-      localStorage.setItem('_ImdbApiKey', val);
-      setImdbApiKey(val);
-    },
-    [],
-  )
 
   function checkForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
     if (event.key === 'Enter') {
@@ -59,28 +51,12 @@ const Search = (props: Props) => {
       <details open={showApiKey} className='api-key flow-content'>
         <summary className={!keySet ? 'required' : ''}>API Keys</summary>
         <p>
-          This uses the <a href="https://www.movieofthenight.com/about/api" target="_blank">Movie of the Night API</a> to look up movie availability. A free API key is required to request this info.
+          <em>Your API keys will only be stored locally to make the API requests, nothing is sent to this server.</em>
         </p>
-        <p>
-          <a className="button" href="https://rapidapi.com/movie-of-the-night-movie-of-the-night-default/api/streaming-availability/pricing" target="_blank">Request a Free Key here</a> and then paste it into the field bellow.
-        </p>
-        <p>
-          <em>Your API key will only be stored locally to make the API request, nothing is sent to this server.</em>
-        </p>
-        <label>
-          <span className='label'>
-            API Key
-          </span>
-          <input value={movieNightApiKey} onChange={setAndStoreApiKey}></input>
-        </label>
+        <ApiKeyPrompt apiKey={movieNightApiKey} setApiKey={setMovieNightApiKey} storageKey={MovieNightStorageKey} apiRegistryUrl={MovieNightUrl} description={MovieNightDesc} />
         <hr />
-        <p>Optional</p>
-        <label>
-          <span className='label'>
-            IMDb ID Lookup API Key
-          </span>
-          <input value={imdbApiKey} onChange={setAndStoreImdbApiKey}></input>
-        </label>
+        <p><em>Optional IMDb ID Lookup API Key</em></p>
+        <ApiKeyPrompt apiKey={imdbApiKey} setApiKey={setImdbApiKey} storageKey={IMDbStorageKey} apiRegistryUrl={IMDbUrl} description={IMDbDesc} />
       </details>
       <div>
         <label>
