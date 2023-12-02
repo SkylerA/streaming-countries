@@ -1,26 +1,27 @@
 'use client';
 
 import React, { type ChangeEvent, useState, useEffect, useCallback, useRef } from 'react'
-import useSearch from '../hooks/useSearch';
+import useCountrySearch from '../hooks/useSearch';
 import FreeCountryResults from './FreeCountryResults';
 
 type Props = {}
 
 const Search = (props: Props) => {
-  const [apiKey, setApiKey] = useState('');
+  const [movieNightApiKey, setMovieNightApiKey] = useState('');
+  const [imdbApiKey, setImdbApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
-  const { handleSearch, results, error } = useSearch();
+  const { handleSearch, results, error } = useCountrySearch();
 
-  const keySet = apiKey !== '';
+  const keySet = movieNightApiKey !== '';
 
   // Handle API Key rendering
   useEffect(() => {
     // Check for a stored api key
-    const localKey = localStorage.getItem("_ApiKey") || '';
+    const localKey = localStorage.getItem("_MovieNightApiKey") || '';
     if (localKey !== '') {
       // If we have a key already, update the field
-      setApiKey(localKey);
+      setMovieNightApiKey(localKey);
     } else {
       // Open the API Key detail if we don't have a key stored currently
       setShowApiKey(true);
@@ -31,22 +32,32 @@ const Search = (props: Props) => {
   const setAndStoreApiKey = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const val = event.target.value;
-      localStorage.setItem('_ApiKey', val);
-      setApiKey(val);
+      localStorage.setItem('_MovieNightApiKey', val);
+      setMovieNightApiKey(val);
+    },
+    [],
+  )
+
+  // Set ApiKey and also store in LocalStorage
+  const setAndStoreImdbApiKey = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const val = event.target.value;
+      localStorage.setItem('_ImdbApiKey', val);
+      setImdbApiKey(val);
     },
     [],
   )
 
   function checkForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
     if (event.key === 'Enter') {
-      handleSearch(apiKey, searchRef.current?.value ?? "");
+      handleSearch(movieNightApiKey, searchRef.current?.value ?? "");
     }
   }
 
   return (
     <div className='search-container'>
       <details open={showApiKey} className='api-key flow-content'>
-        <summary className={!keySet ? 'required' : ''}>API Key</summary>
+        <summary className={!keySet ? 'required' : ''}>API Keys</summary>
         <p>
           This uses the <a href="https://www.movieofthenight.com/about/api" target="_blank">Movie of the Night API</a> to look up movie availability. A free API key is required to request this info.
         </p>
@@ -60,7 +71,15 @@ const Search = (props: Props) => {
           <span className='label'>
             API Key
           </span>
-          <input value={apiKey} onChange={setAndStoreApiKey}></input>
+          <input value={movieNightApiKey} onChange={setAndStoreApiKey}></input>
+        </label>
+        <hr />
+        <p>Optional</p>
+        <label>
+          <span className='label'>
+            IMDb ID Lookup API Key
+          </span>
+          <input value={imdbApiKey} onChange={setAndStoreImdbApiKey}></input>
         </label>
       </details>
       <div>
@@ -70,7 +89,7 @@ const Search = (props: Props) => {
           </span>
           <a className="info" href="https://developer.imdb.com/documentation/key-concepts" target="_blank">?</a>
           <input className="search-field" type='text' onKeyDown={checkForEnter} ref={searchRef}></input>
-          <button className='button' disabled={!keySet} onClick={() => handleSearch(apiKey, searchRef.current?.value ?? "")}>Search</button>
+          <button className='button' disabled={!keySet} onClick={() => handleSearch(movieNightApiKey, searchRef.current?.value ?? "")}>Search</button>
         </label>
       </div>
       {!error &&
@@ -82,7 +101,7 @@ const Search = (props: Props) => {
             Something went wrong while requesting data.
           </p>
           <p>
-            Are your API Key({apiKey}) and IMDb ID({searchRef.current?.value}) valid?
+            Are your API Key({movieNightApiKey}) and IMDb ID({searchRef.current?.value}) valid?
           </p>
           <p className='error'>Error: {error}</p>
         </div>

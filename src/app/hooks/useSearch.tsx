@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { GetIdResponse, type CountryResult } from '../types/MovieNightApi/GetId';
-import { withCoalescedInvoke } from 'next/dist/lib/coalesced-function';
 
-const useSearch = () => {
+const useCountrySearch = () => {
     const [results, setResults] = useState<CountryResult[] | undefined>(undefined);
     const [error, setError] = useState("");
 
@@ -76,4 +75,4 @@ const useSearch = () => {
     return { handleSearch, results, error };
 }
 
-export default useSearch
+export default useCountrySearch
