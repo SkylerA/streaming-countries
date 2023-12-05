@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { GetIdResponse, type CountryResult } from '../types/MovieNightApi/GetId';
 
 export type SearchRequest<API_RESPONSE, PARSE_RESULT> = {
     apiKey: string,
