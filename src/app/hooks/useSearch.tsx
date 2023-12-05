@@ -1,12 +1,22 @@
 import React, { useState } from 'react'
 import { GetIdResponse, type CountryResult } from '../types/MovieNightApi/GetId';
 
-const useCountrySearch = () => {
-    const [results, setResults] = useState<CountryResult[] | undefined>(undefined);
+export type SearchRequest<API_RESPONSE, PARSE_RESULT> = {
+    apiKey: string,
+    apiHost: string,
+    requestUrl: string,
+    paramStr: string,
+    parseFn: (data: API_RESPONSE) => PARSE_RESULT,
+    ignoreCached: boolean
+}
+
+const useSearch = <API_RESPONSE, PARSE_RESULT>() => {
+    const [results, setResults] = useState<PARSE_RESULT | undefined>(undefined);
     const [error, setError] = useState("");
 
-    const handleSearch = async (apiKey: string, id: string, ignoreCached: boolean = true) => {
-        const storageKey = `result-${id}`;
+    const handleSearch = async (request: SearchRequest<API_RESPONSE, PARSE_RESULT>) => {
+        const { apiKey, apiHost, requestUrl, paramStr, parseFn, ignoreCached } = request;
+        const storageKey = `result-${paramStr}`;
         // To avoid API calls while testing we cache previous calls in localStorage
         // let result = localStorage.getItem(storageKey);
         let result = ''; // disabling caching in release for now
@@ -14,13 +24,13 @@ const useCountrySearch = () => {
         // Get API results if not cached or explicitly re-querying
         if (!result || ignoreCached) {
             // Add IMDb ID to endpoint
-            const url = `https://streaming-availability.p.rapidapi.com/get?output_language=en&imdb_id=${id}`;
+            const url = `${requestUrl}${paramStr}`;
             // Add API Key
             const options = {
                 method: 'GET',
                 headers: {
                     'X-RapidAPI-Key': apiKey,
-                    'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com'
+                    'X-RapidAPI-Host': apiHost
                 }
             };
 
@@ -47,32 +57,15 @@ const useCountrySearch = () => {
 
         // Parse and update results
         if (result) {
-            const json = JSON.parse(result) as GetIdResponse;
-            const found = parseApiResponse(json);
+            const json = JSON.parse(result) as API_RESPONSE;
+            const found = parseFn(json);
 
             setError("");
             setResults(found);
         }
     }
 
-    const parseApiResponse = (data: GetIdResponse) => {
-        const info = data.result?.streamingInfo;
-        const countries = [];
-        // Step through each country
-        if (info) {
-            for (const [country, val] of Object.entries(info)) {
-                // Filter out countries that don't have a video for free or subscription
-                const found = val.filter(obj => obj.streamingType === "subscription" || obj.streamingType === "free");
-                // Add country code to results and store
-                for (const obj of found) {
-                    countries.push({ country, ...obj } as CountryResult);
-                }
-            }
-        }
-        return countries;
-    }
-
     return { handleSearch, results, error };
 }
 
-export default useCountrySearch
+export default useSearch
