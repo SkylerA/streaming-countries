@@ -6,6 +6,7 @@ import FreeCountryResults from './FreeCountryResults';
 import ApiKeys from './ApiKeys';
 import { CountryResult, GetIdResponse, parseGetIdResponse } from '../types/MovieNightApi/GetId';
 import { MovieResult, SearchByTitleResponse, parseSearchByTitleResponse } from '../types/MDBListApi/SearchByTitle';
+import MDBListResults from './MDBListResults';
 
 type Props = {}
 
@@ -69,6 +70,20 @@ const Search = (props: Props) => {
             <input className="search-field" type='text' onKeyDown={checkForEnter} ref={imdbSearchRef}></input>
             <button className='button' disabled={!keySet} onClick={() => imdbSearch(imdbSearchRef)}>Search</button>
           </label>
+        </div>
+      }
+      {!imdbError &&
+        <MDBListResults results={imdbResults} />
+      }
+      {imdbError &&
+        <div>
+          <p>
+            Something went wrong while requesting data.
+          </p>
+          <p>
+            Is your API Key({movieNightApiKey}) valid?
+          </p>
+          <p className='error'>Error: {imdbError}</p>
         </div>
       }
       <div>
