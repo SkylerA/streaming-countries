@@ -53,3 +53,20 @@ export interface Subtitle {
     locale: Audio;
     closedCaptions: boolean;
 }
+
+export const parseGetIdResponse = (data: GetIdResponse) => {
+    const info = data.result?.streamingInfo;
+    const countries = [];
+    // Step through each country
+    if (info) {
+        for (const [country, val] of Object.entries(info)) {
+            // Filter out countries that don't have a video for free or subscription
+            const found = val.filter(obj => obj.streamingType === "subscription" || obj.streamingType === "free");
+            // Add country code to results and store
+            for (const obj of found) {
+                countries.push({ country, ...obj } as CountryResult);
+            }
+        }
+    }
+    return countries;
+}

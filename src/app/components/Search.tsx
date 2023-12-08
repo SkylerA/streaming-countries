@@ -1,90 +1,122 @@
 'use client';
 
-import React, { type ChangeEvent, useState, useEffect, useCallback, useRef } from 'react'
-import useSearch from '../hooks/useSearch';
+import React, { useState, useRef } from 'react'
+import useSearch, { SearchRequest } from '../hooks/useSearch';
 import FreeCountryResults from './FreeCountryResults';
+import ApiKeys from './ApiKeys';
+import { CountryResult, GetIdResponse, parseGetIdResponse } from '../types/MovieNightApi/GetId';
+import { MovieResult, SearchByTitleResponse, parseSearchByTitleResponse } from '../types/MDBListApi/SearchByTitle';
+import MDBListResults from './MDBListResults';
 
 type Props = {}
 
+const movieNightRequestDefaults: SearchRequest<GetIdResponse, CountryResult[]> = {
+  apiKey: '',
+  apiHost: 'streaming-availability.p.rapidapi.com',
+  requestUrl: 'https://streaming-availability.p.rapidapi.com/get',
+  paramStr: '',
+  parseFn: parseGetIdResponse,
+  ignoreCached: true
+}
+
+const imdbRequestDefaults: SearchRequest<SearchByTitleResponse, MovieResult[]> = {
+  apiKey: '',
+  apiHost: 'mdblist.p.rapidapi.com',
+  requestUrl: 'https://mdblist.p.rapidapi.com/',
+  paramStr: '',
+  parseFn: parseSearchByTitleResponse,
+  ignoreCached: true
+}
+
 const Search = (props: Props) => {
-  const [apiKey, setApiKey] = useState('');
-  const [showApiKey, setShowApiKey] = useState(false);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const { handleSearch, results, error } = useSearch();
+  const [movieNightApiKey, setMovieNightApiKey] = useState('');
+  const [imdbApiKey, setImdbApiKey] = useState('');
+  const countrySearchRef = useRef<HTMLInputElement>(null);
+  const imdbSearchRef = useRef<HTMLInputElement>(null);
+  const { handleSearch: handleCountrySearch, results: countryResults, error: countryError } = useSearch<GetIdResponse, CountryResult[]>();
+  const { handleSearch: handleImdbSearch, results: imdbResults, error: imdbError } = useSearch<SearchByTitleResponse, MovieResult[]>();
 
-  const keySet = apiKey !== '';
+  const keySet = movieNightApiKey !== '';
 
-  // Handle API Key rendering
-  useEffect(() => {
-    // Check for a stored api key
-    const localKey = localStorage.getItem("_ApiKey") || '';
-    if (localKey !== '') {
-      // If we have a key already, update the field
-      setApiKey(localKey);
-    } else {
-      // Open the API Key detail if we don't have a key stored currently
-      setShowApiKey(true);
-    }
-  }, []);
-
-  // Set ApiKey and also store in LocalStorage
-  const setAndStoreApiKey = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const val = event.target.value;
-      localStorage.setItem('_ApiKey', val);
-      setApiKey(val);
-    },
-    [],
-  )
-
-  function checkForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
+  function countryCheckForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
     if (event.key === 'Enter') {
-      handleSearch(apiKey, searchRef.current?.value ?? "");
+      movieNightSearch(countrySearchRef);
     }
+  }
+
+  function imdbCheckForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
+    if (event.key === 'Enter') {
+      imdbSearch(imdbSearchRef);
+    }
+  }
+
+  function movieNightSearch(input: React.RefObject<HTMLInputElement>) {
+    const val = input?.current?.value ?? "";
+    const paramStr = `?output_language=en&imdb_id=${val}`
+    const req = { ...movieNightRequestDefaults, apiKey: movieNightApiKey, paramStr };
+    handleCountrySearch(req);
+  }
+
+  function imdbSearch(input: React.RefObject<HTMLInputElement>) {
+    let val = input?.current?.value ?? "";
+    if (val[0] !== '"' && val.slice(-1) !== '"') {
+      val = `"${val}"`;
+    }
+    const paramStr = `?s=${val}`
+    const req = { ...imdbRequestDefaults, apiKey: imdbApiKey, paramStr };
+    handleImdbSearch(req);
   }
 
   return (
     <div className='search-container'>
-      <details open={showApiKey} className='api-key flow-content'>
-        <summary className={!keySet ? 'required' : ''}>API Key</summary>
-        <p>
-          This uses the <a href="https://www.movieofthenight.com/about/api" target="_blank">Movie of the Night API</a> to look up movie availability. A free API key is required to request this info.
-        </p>
-        <p>
-          <a className="button" href="https://rapidapi.com/movie-of-the-night-movie-of-the-night-default/api/streaming-availability/pricing" target="_blank">Request a Free Key here</a> and then paste it into the field bellow.
-        </p>
-        <p>
-          <em>Your API key will only be stored locally to make the API request, nothing is sent to this server.</em>
-        </p>
-        <label>
-          <span className='label'>
-            API Key
-          </span>
-          <input value={apiKey} onChange={setAndStoreApiKey}></input>
-        </label>
-      </details>
+      <ApiKeys imdbApiKey={imdbApiKey} setImdbApiKey={setImdbApiKey} movieNightApiKey={movieNightApiKey} setMovieNightApiKey={setMovieNightApiKey} />
+      {imdbApiKey !== '' &&
+        <div>
+          <label>
+            <span className='label'>
+              Movie Title
+            </span>
+            <input className="search-field" type='text' onKeyDown={imdbCheckForEnter} ref={imdbSearchRef}></input>
+            <button className='button' disabled={!keySet} onClick={() => imdbSearch(imdbSearchRef)}>Search</button>
+          </label>
+        </div>
+      }
+      {!imdbError &&
+        <MDBListResults results={imdbResults} searchRef={countrySearchRef} searchFn={movieNightSearch} />
+      }
+      {imdbError &&
+        <div>
+          <p>
+            Something went wrong while requesting data.
+          </p>
+          <p>
+            Is your API Key({movieNightApiKey}) valid?
+          </p>
+          <p className='error'>Error: {imdbError}</p>
+        </div>
+      }
       <div>
         <label>
           <span className='label'>
             IMDb Movie ID
           </span>
           <a className="info" href="https://developer.imdb.com/documentation/key-concepts" target="_blank">?</a>
-          <input className="search-field" type='text' onKeyDown={checkForEnter} ref={searchRef}></input>
-          <button className='button' disabled={!keySet} onClick={() => handleSearch(apiKey, searchRef.current?.value ?? "")}>Search</button>
+          <input className="search-field" type='text' onKeyDown={countryCheckForEnter} ref={countrySearchRef}></input>
+          <button className='button' disabled={!keySet} onClick={() => movieNightSearch(countrySearchRef)}>Search</button>
         </label>
       </div>
-      {!error &&
-        <FreeCountryResults results={results} />
+      {!countryError &&
+        <FreeCountryResults results={countryResults} />
       }
-      {error &&
+      {countryError &&
         <div>
           <p>
             Something went wrong while requesting data.
           </p>
           <p>
-            Are your API Key({apiKey}) and IMDb ID({searchRef.current?.value}) valid?
+            Are your API Key({movieNightApiKey}) and IMDb ID({countrySearchRef.current?.value}) valid?
           </p>
-          <p className='error'>Error: {error}</p>
+          <p className='error'>Error: {countryError}</p>
         </div>
       }
     </div>

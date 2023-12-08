@@ -224,3 +224,25 @@ details[open] summary {
 .search-field {
   width: 40%;
 }
+
+.imdb-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+a.imdb-link {
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+  background-color: #e6b91e;
+  border-radius: .25rem;
+  padding: 0rem 0.25rem;
+  margin: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.imdb-result .title,
+.imdb-result .id {
+  cursor: pointer;
+}
