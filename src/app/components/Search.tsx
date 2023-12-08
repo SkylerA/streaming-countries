@@ -52,7 +52,10 @@ const Search = (props: Props) => {
   }
 
   function imdbSearch(input: React.RefObject<HTMLInputElement>) {
-    const val = input?.current?.value ?? "";
+    let val = input?.current?.value ?? "";
+    if (val[0] !== '"' && val.slice(-1) !== '"') {
+      val = `"${val}"`;
+    }
     const paramStr = `?s=${val}`
     const req = { ...imdbRequestDefaults, apiKey: imdbApiKey, paramStr };
     handleImdbSearch(req);
