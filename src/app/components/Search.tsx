@@ -38,9 +38,15 @@ const Search = (props: Props) => {
 
   const keySet = movieNightApiKey !== '';
 
-  function checkForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
+  function countryCheckForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
     if (event.key === 'Enter') {
       movieNightSearch(countrySearchRef);
+    }
+  }
+
+  function imdbCheckForEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
+    if (event.key === 'Enter') {
+      imdbSearch(imdbSearchRef);
     }
   }
 
@@ -70,13 +76,13 @@ const Search = (props: Props) => {
             <span className='label'>
               Movie Title
             </span>
-            <input className="search-field" type='text' onKeyDown={checkForEnter} ref={imdbSearchRef}></input>
+            <input className="search-field" type='text' onKeyDown={imdbCheckForEnter} ref={imdbSearchRef}></input>
             <button className='button' disabled={!keySet} onClick={() => imdbSearch(imdbSearchRef)}>Search</button>
           </label>
         </div>
       }
       {!imdbError &&
-        <MDBListResults results={imdbResults} />
+        <MDBListResults results={imdbResults} searchRef={countrySearchRef} searchFn={movieNightSearch} />
       }
       {imdbError &&
         <div>
@@ -95,7 +101,7 @@ const Search = (props: Props) => {
             IMDb Movie ID
           </span>
           <a className="info" href="https://developer.imdb.com/documentation/key-concepts" target="_blank">?</a>
-          <input className="search-field" type='text' onKeyDown={checkForEnter} ref={countrySearchRef}></input>
+          <input className="search-field" type='text' onKeyDown={countryCheckForEnter} ref={countrySearchRef}></input>
           <button className='button' disabled={!keySet} onClick={() => movieNightSearch(countrySearchRef)}>Search</button>
         </label>
       </div>

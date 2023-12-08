@@ -241,3 +241,8 @@ a.imdb-link {
   margin: 0.25rem;
   font-size: 0.75rem;
 }
+
+.imdb-result .title,
+.imdb-result .id {
+  cursor: pointer;
+}
