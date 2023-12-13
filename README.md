@@ -11,7 +11,10 @@ This is a tool for all those ads that say you can easily stream movies from othe
 This tool uses the [Movie of the Night](https://movieofthenight.com/") API to search the stream options of all countries at once and then filters for only the free-ish streaming options.
 
 Provide a free API Key and IMDb id for the movie you want and it will display which countries might have the movie.
-![Preview Image](./src/app/imgs/preview.png)
+![Results Preview Image](./src/app/imgs/preview.png)
+
+An additional free api can be subscribed to and then an optional `Movie Title` field will allow looking up IMDb ids by title. Clicking a result will auto search for available countries.
+![Movie Title Search Preview Image](./src/app/imgs/movie-title-preview.png)
 
 <br />
 <br />
